@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>33占卜室 · 图片检查</title>
+  <style>
+    :root{color-scheme:light;font-family:system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;color:#343a3d;background:#f7f6f1;line-height:1.7}
+    *{box-sizing:border-box}body{margin:0;padding:40px 20px}main{max-width:920px;margin:auto}h1{font-size:26px;margin:0 0 12px}p{color:#616966;margin:10px 0}button{font:inherit;background:#766038;color:#fff;border:0;border-radius:8px;padding:10px 22px;cursor:pointer}button:disabled{opacity:.55;cursor:wait}a{color:#615032;text-underline-offset:3px}a:focus-visible,button:focus-visible{outline:3px solid #b89c66;outline-offset:4px}
+    .box{padding:20px 24px;background:#fff;border:1px solid #e2e2d8;border-radius:12px;margin:24px 0}.origin{overflow-wrap:anywhere}#summary{font-weight:600;color:#343a3d}.table-scroll{overflow-x:auto;background:#fff;border:1px solid #deded5;border-radius:10px}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid #eaeae2}th{background:#efeee7;font-weight:600}.path{font-family:ui-monospace,Consolas,monospace;overflow-wrap:anywhere;min-width:250px}.state{white-space:nowrap}.ok{color:#25664c}.fail{color:#a13c32}.pending{color:#747974}tr:last-child td{border-bottom:0}small{display:block;font-family:system-ui,sans-serif;color:#757a76}.foot{font-size:13px;margin-top:22px}@media(max-width:560px){body{padding:26px 14px}.box{padding:16px}h1{font-size:23px}th,td{padding:10px}}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>33占卜室 · 图片检查</h1>
+    <p>检查当前文件夹中的49个图片资源。建议在 GitHub Pages 发布完成后打开本页，再点击检查。</p>
+    <div class="box">
+      <p class="origin">当前目录：<span id="base"></span></p>
+      <button id="start" type="button">开始检查</button>
+      <p id="summary" role="status" aria-live="polite">尚未开始。</p>
+      <p>失败时点击“直接打开”，查看是否404或连接失败；核对仓库中的文件位置和名称，补传后等待发布完成。全部通过仅表示图片可读取。</p>
+      <a href="index.html">返回33的占卜室</a>
+    </div>
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">图片路径</th><th scope="col">结果</th><th scope="col">打开图片</th></tr></thead>
+      <tbody id="results"></tbody>
+    </table></div>
+    <p class="foot">本页独立检查图片，不需要主网页脚本。检查时重新请求图片以减少缓存影响；网络超时也会列为失败，可重试。</p>
+  </main>
+  <script>
+    'use strict';
+    const paths = [
+      "assets/card-back-v3.svg",
+      "assets/cards/00-fool.webp",
+      "assets/cards/01-magician.webp",
+      "assets/cards/02-high-priestess.webp",
+      "assets/cards/03-empress.webp",
+      "assets/cards/04-emperor.webp",
+      "assets/cards/05-hierophant.webp",
+      "assets/cards/06-lovers.webp",
+      "assets/cards/07-chariot.webp",
+      "assets/cards/08-strength.webp",
+      "assets/cards/09-hermit.webp",
+      "assets/cards/10-wheel-of-fortune.webp",
+      "assets/cards/11-justice.webp",
+      "assets/cards/12-hanged-man.webp",
+      "assets/cards/13-death.webp",
+      "assets/cards/14-temperance.webp",
+      "assets/cards/15-devil.webp",
+      "assets/cards/16-tower.webp",
+      "assets/cards/17-star.webp",
+      "assets/cards/18-moon.webp",
+      "assets/cards/19-sun.webp",
+      "assets/cards/20-judgement.webp",
+      "assets/cards/21-world.webp",
+      "assets/hero/33-original-400.webp",
+      "assets/hero/33-original-640.webp",
+      "assets/hero/33-original-960.webp",
+      "assets/thumbs/00-fool.webp",
+      "assets/thumbs/01-magician.webp",
+      "assets/thumbs/02-high-priestess.webp",
+      "assets/thumbs/03-empress.webp",
+      "assets/thumbs/04-emperor.webp",
+      "assets/thumbs/05-hierophant.webp",
+      "assets/thumbs/06-lovers.webp",
+      "assets/thumbs/07-chariot.webp",
+      "assets/thumbs/08-strength.webp",
+      "assets/thumbs/09-hermit.webp",
+      "assets/thumbs/10-wheel-of-fortune.webp",
+      "assets/thumbs/11-justice.webp",
+      "assets/thumbs/12-hanged-man.webp",
+      "assets/thumbs/13-death.webp",
+      "assets/thumbs/14-temperance.webp",
+      "assets/thumbs/15-devil.webp",
+      "assets/thumbs/16-tower.webp",
+      "assets/thumbs/17-star.webp",
+      "assets/thumbs/18-moon.webp",
+      "assets/thumbs/19-sun.webp",
+      "assets/thumbs/20-judgement.webp",
+      "assets/thumbs/21-world.webp",
+      "favicon.svg"
+];
+    const base = new URL('./', location.href);
+    const startButton = document.getElementById('start');
+    const summary = document.getElementById('summary');
+    const body = document.getElementById('results');
+    document.getElementById('base').textContent = base.href;
+    const cells = paths.map(path => {
+      const row = document.createElement('tr');
+      const pathCell = document.createElement('td');
+      pathCell.className = 'path'; pathCell.textContent = path;
+      const state = document.createElement('td');
+      state.className = 'state pending'; state.textContent = '待检查';
+      const action = document.createElement('td');
+      const link = document.createElement('a');
+      link.href = new URL(path, base).href;
+      link.target = '_blank'; link.rel = 'noopener'; link.textContent = '直接打开';
+      link.setAttribute('aria-label', '直接打开 ' + path);
+      action.append(link); row.append(pathCell, state, action); body.append(row);
+      return state;
+    });
+    function probe(path, stamp) {
+      return new Promise(resolve => {
+        const picture = new Image();
+        let settled = false;
+        let timer;
+        const finish = (ok, detail) => {
+          if (settled) return;
+          settled = true; clearTimeout(timer);
+          picture.onload = null; picture.onerror = null;
+          if (!ok) picture.src = '';
+          resolve({ok, detail});
+        };
+        picture.onload = () => finish(true, `${picture.naturalWidth} × ${picture.naturalHeight}`);
+        picture.onerror = () => finish(false, '无法读取：请直接打开核对');
+        timer = setTimeout(() => finish(false, '超时：请重试或直接打开'), 12000);
+        const url = new URL(path, base);
+        if (url.protocol === 'https:' || url.protocol === 'http:') url.searchParams.set('image-check', stamp);
+        picture.src = url.href;
+      });
+    }
+    startButton.addEventListener('click', async () => {
+      if (startButton.disabled) return;
+      startButton.disabled = true;
+      let next = 0, complete = 0, passed = 0;
+      const stamp = String(Date.now());
+      cells.forEach(cell => { cell.className = 'state pending'; cell.textContent = '等待检查'; });
+      summary.textContent = `已检查 0 / ${paths.length}`;
+      const worker = async () => {
+        while (next < paths.length) {
+          const index = next++;
+          cells[index].textContent = '检查中…';
+          const result = await probe(paths[index], stamp);
+          cells[index].className = 'state ' + (result.ok ? 'ok' : 'fail');
+          cells[index].textContent = result.ok ? '通过' : '失败';
+          const detail = document.createElement('small');
+          detail.textContent = result.detail; cells[index].append(detail);
+          complete++; if (result.ok) passed++;
+          summary.textContent = `已检查 ${complete} / ${paths.length} · 通过 ${passed} · 失败 ${complete - passed}`;
+        }
+      };
+      try {
+        await Promise.all(Array.from({length:4}, worker));
+        summary.textContent = passed === paths.length
+          ? `${paths.length} 个图片资源全部通过。可以回首页检查显示效果。`
+          : `检查完成：通过 ${passed}，失败 ${paths.length - passed}。请核对失败项对应的文件和目录。`;
+      } catch {
+        summary.textContent = '检查中断，请刷新本页后重试。';
+      } finally {
+        startButton.disabled = false; startButton.textContent = '重新检查';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#fbf9f0">
+  <meta name="description" content="33的占卜室。想一件心事，让33为你翻开一张牌。">
+  <title>33的占卜室</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css?v=3">
+  <link rel="preload" href="assets/card-back-v3.svg" as="image" type="image/svg+xml">
+  <script src="cards-data.js" defer></script>
+  <script src="audio.js?v=3" defer></script>
+  <script src="app.js?v=3" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header wrap"><a class="brand" href="#home">33的占卜室</a><div class="header-tools"><button type="button" id="sound-toggle" class="sound-toggle" aria-label="关闭音效" aria-pressed="true" title="音效已开启"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4Z"/><path class="sound-waves" d="M16 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14"/><path class="sound-slash" d="m4 4 16 16"/></svg></button><a href="#collection" class="deck-link">牌组 <span aria-hidden="true">↗</span></a></div></header>
+  <main id="main">
+    <section id="home" class="hero" aria-labelledby="hero-title">
+      <p class="eyebrow">33’S TAROT ROOM</p>
+      <h1 id="hero-title">想一件心事，<br>让33翻开一张牌。</h1>
+      <img class="hero-portrait" src="assets/hero/33-original-640.webp" srcset="assets/hero/33-original-400.webp 400w, assets/hero/33-original-640.webp 640w, assets/hero/33-original-960.webp 960w" sizes="(max-width:600px) 82vw, 405px" width="960" height="960" alt="你提供的33占卜师封面：33穿着星月斗篷，坐在水晶球后" fetchpriority="high" decoding="async">
+      <button type="button" id="draw-main" class="gold-button"><span aria-hidden="true">✧</span><span>抽一张牌</span></button>
+      <p class="hero-note">把呼吸放慢一点。</p>
+    </section>
+    <section id="collection" class="collection wrap" aria-labelledby="collection-title">
+      <div class="collection-heading"><h2 id="collection-title">33的22张牌</h2><span>THE MAJOR ARCANA</span></div>
+      <div id="card-grid" class="card-grid"></div>
+    </section>
+  </main>
+  <footer class="site-footer"><span>33的占卜室</span><p>供娱乐与自我梳理</p></footer>
+
+  <dialog id="reading-dialog" class="reading-dialog" aria-labelledby="drawing-title">
+    <button type="button" class="dialog-close" id="close-dialog" aria-label="关闭解语">×</button>
+    <div id="drawing-view" class="drawing-view" hidden>
+      <p class="eyebrow">33’S TAROT ROOM</p>
+      <h2 id="drawing-title">让33为你翻一张牌。</h2>
+      <div id="card-stage" class="card-stage" aria-hidden="true">
+        <div id="card-pile" class="card-pile"></div>
+        <div id="chosen-card" class="chosen-card"><div id="card-flipper" class="card-flipper"><div class="card-face card-back"></div><div class="card-face card-front"><img id="reveal-image" alt=""></div></div></div>
+      </div>
+      <p id="drawing-status" class="drawing-status" role="status" aria-live="polite">牌正在慢慢展开。</p>
+    </div>
+    <div id="reading-view" class="reading-view" hidden>
+      <div class="reading-image-column"><img id="reading-image" width="262" height="600" alt=""></div>
+      <div id="reading-copy" class="reading-copy"><p id="reading-numeral" class="eyebrow"></p><h2 id="dialog-title" tabindex="-1"></h2><p id="reading-english" class="reading-english"></p><blockquote id="reading-message"></blockquote><p id="reading-interpretation" class="reading-interpretation"></p><button id="draw-again" class="gold-button" type="button">再抽一张 <span aria-hidden="true">↗</span></button></div>
+    </div>
+    <div id="reading-error" class="reading-error" hidden role="alert"><h2 id="error-title">这张牌还在路上。</h2><p>请再试一次。</p><button type="button" id="retry-reading" class="gold-button">重新加载</button></div>
+  </dialog>
+  <noscript><p class="noscript-note">请开启JavaScript，让33为你翻牌。</p></noscript>
+</body>
+</html>
